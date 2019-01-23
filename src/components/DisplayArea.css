@@ -1,0 +1,32 @@
+.calc-display {
+	position: flex;
+	width: 300px;
+	height: 100px;
+	/*text-align: right;*/
+	/*vertical-align: middle;*/
+	/*align-items: center;*/
+	overflow: none;
+	margin: 0 0 10px 0;
+	align-items: center;
+}
+
+.calc-display-operation {
+	position: absolute;
+	top: -5px;
+	right: 5px;
+	color: grey;
+	font-size: 16pt;
+}
+
+.calc-display-value {
+	display: flex;
+	margin: auto;
+	height: 100%;
+	align-items: center;
+	flex-direction: row-reverse;
+}
+
+.calc-display-value p {
+	color: white;
+	/*overflow: scroll;*/
+}

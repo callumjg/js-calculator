@@ -1,0 +1,27 @@
+.movable-container {
+	display: flex;
+	background: #211963;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	/*background: black;*/
+	border-radius: 50px;
+	height: 600px;
+	width: 320px;
+}
+
+.calc-container {
+	position: absolute;
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-content: space-around;
+	justify-content: space-around;
+	width: 300px;
+	height: 500px;
+}
+
+.calc-container p {
+	color: white;
+	/*font-weight: bold;*/
+	font-size: 20px;
+}
