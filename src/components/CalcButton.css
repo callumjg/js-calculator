@@ -1,8 +1,10 @@
 .btn-calc {
+	/*font-family: "Major Mono Display", monospace;*/
+
 	min-width: 70px;
 	height: 70px;
 	border-radius: 35px;
-	background: white;
+	/*background: white;*/
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -24,14 +26,21 @@
 }
 
 .btn-calc-control {
-	background: #b6bac1;
+	/*iphone: */
+	/*background: #b6bac1;*/
+	background: #adb2b5;
 }
 .btn-calc-operator {
-	background: #eda547;
+	/*iphone: */
+	/*background: #eda547;*/
+	background: #db4e0d;
 }
 
 .btn-calc-num {
-	background: #3b3c3d;
+	/*iphone:*/
+	/*background: #3b3c3d;*/
+
+	background: #254b5b;
 }
 
 .animate-btn {
@@ -45,9 +54,6 @@
 	border-radius: 35px;
 	height: 70px;
 	width: 70px;
-	/*-webkit-transition: background-color 100ms ease-out;
-    -ms-transition: background-color 100ms ease-out;
-    transition: background-color 100ms ease-out;*/
 }
 
 .btn-zero {

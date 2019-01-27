@@ -1,11 +1,9 @@
 export default class CalculatorOperations {
 	getPrecision = inputNum => {
 		if (!isFinite(inputNum) || inputNum === "") return 0;
-
-		let factor = 1;
-		let precision = 0;
-		let num = parseFloat(inputNum);
-
+		let factor = 1,
+			precision = 0,
+			num = parseFloat(inputNum);
 		while (
 			typeof num === "number" &&
 			Math.round(num * factor) / factor !== num
@@ -16,14 +14,11 @@ export default class CalculatorOperations {
 		return precision;
 	};
 
-	// returns factor of 10 required to convert to an integer
-	// the number in an array with the most precision
 	getFactorOfTen = arr => {
 		if (arr.constructor !== Array) {
 			arr = [arr];
 		}
 		let highestPrecision = null;
-
 		try {
 			let numArray = arr.map(num => parseFloat(num));
 			numArray.forEach(num => {
@@ -40,18 +35,13 @@ export default class CalculatorOperations {
 	};
 
 	toNumObj = floatNum => {
-		let resultNum = {
-			numerator: null,
-			denominator: null
-		};
-		let precision = this.getPrecision(floatNum);
-		let factorOfTen = Math.pow(10, precision);
+		let precision = this.getPrecision(floatNum),
+			factorOfTen = Math.pow(10, precision);
 
-		resultNum.numerator = Math.round(floatNum * factorOfTen);
-		resultNum.denominator = factorOfTen;
-		resultNum = this.optimizeFraction(resultNum);
-
-		return resultNum;
+		return this.optimizeFraction({
+			numerator: Math.round(floatNum * factorOfTen),
+			denominator: factorOfTen
+		});
 	};
 
 	toFloat = num => {
@@ -59,8 +49,8 @@ export default class CalculatorOperations {
 	};
 
 	makeSameDenominator = arr => {
-		let [a, b] = arr;
-		let factor = null;
+		let [a, b] = arr,
+			factor = null;
 
 		if (a.denominator === b.denominator) {
 		} else if (a.denominator % b.denominator === 0) {
@@ -72,8 +62,8 @@ export default class CalculatorOperations {
 			a.denominator *= factor;
 			a.numerator *= factor;
 		} else {
-			let aFactor = b.denominator;
-			let bFactor = a.denominator;
+			let aFactor = b.denominator,
+				bFactor = a.denominator;
 			a.denominator *= aFactor;
 			a.numerator *= aFactor;
 			b.denominator *= bFactor;
@@ -84,22 +74,19 @@ export default class CalculatorOperations {
 
 	getLargerNumber = arr => {
 		let [a, b] = arr;
-		let largerNumber = null;
-		let smallerNumber = null;
+		a = Math.abs(a);
+		b = Math.abs(b);
 
 		if (a > b) {
-			largerNumber = a;
-			smallerNumber = b;
+			return [a, b];
 		} else {
-			largerNumber = b;
-			smallerNumber = a;
+			return [b, a];
 		}
-		return [largerNumber, smallerNumber];
 	};
 
 	getGCD = arr => {
 		let [largerNumber, smallerNumber] = this.getLargerNumber(arr);
-		if (smallerNumber === 0 || largerNumber === 0) return 1; // Without this there will be an infinite loop
+		if (smallerNumber === 0 || largerNumber === 0) return 1;
 		if (largerNumber % smallerNumber === 0) {
 			return smallerNumber;
 		} else {
@@ -110,66 +97,56 @@ export default class CalculatorOperations {
 
 	optimizeFraction = num => {
 		let { numerator, denominator } = num;
-		let greatestCommonDivisor = this.getGCD([numerator, denominator]);
-		let result = {
-			numerator: numerator / greatestCommonDivisor,
-			denominator: denominator / greatestCommonDivisor
-		};
-		return result;
+
+		if (numerator === 0) {
+			return { numerator: 0, denominator: 1 };
+		} else {
+			let greatestCommonDivisor = this.getGCD([numerator, denominator]);
+			return {
+				numerator: numerator / greatestCommonDivisor,
+				denominator: denominator / greatestCommonDivisor
+			};
+		}
 	};
 
 	divide = (a, b) => {
-		let firstNum = a;
-		let secondNum = b;
-		let resultNum = {
-			numerator: null,
-			denominator: null
-		};
+		let firstNum = a,
+			secondNum = b;
 
-		resultNum.numerator = firstNum.numerator * secondNum.denominator;
-		resultNum.denominator = firstNum.denominator * secondNum.numerator;
-		resultNum = this.optimizeFraction(resultNum);
-		return resultNum;
+		return this.optimizeFraction({
+			numerator: firstNum.numerator * secondNum.denominator,
+			denominator: firstNum.denominator * secondNum.numerator
+		});
 	};
 
 	multiply = (a, b) => {
-		let firstNum = a;
-		let secondNum = b;
-		let resultNum = {
-			numerator: null,
-			denominator: null
-		};
-		resultNum.numerator = firstNum.numerator * secondNum.numerator;
-		resultNum.denominator = firstNum.denominator * secondNum.denominator;
-		resultNum = this.optimizeFraction(resultNum);
-		return resultNum;
+		let firstNum = a,
+			secondNum = b;
+
+		return this.optimizeFraction({
+			numerator: firstNum.numerator * secondNum.numerator,
+			denominator: firstNum.denominator * secondNum.denominator
+		});
 	};
 
 	subtract = (a, b) => {
-		let firstNum = a;
-		let secondNum = b;
-		let resultNum = {
-			numerator: null,
-			denominator: null
-		};
+		let firstNum = a,
+			secondNum = b;
+
 		[firstNum, secondNum] = this.makeSameDenominator([firstNum, secondNum]);
-		resultNum.numerator = firstNum.numerator - secondNum.numerator;
-		resultNum.denominator = firstNum.denominator;
-		resultNum = this.optimizeFraction(resultNum);
-		return resultNum;
+		return this.optimizeFraction({
+			numerator: firstNum.numerator - secondNum.numerator,
+			denominator: firstNum.denominator
+		});
 	};
 
 	add = (a, b) => {
-		let firstNum = a;
-		let secondNum = b;
-		let resultNum = {
-			numerator: null,
-			denominator: null
-		};
+		let firstNum = a,
+			secondNum = b;
 		[firstNum, secondNum] = this.makeSameDenominator([firstNum, secondNum]);
-		resultNum.numerator = firstNum.numerator + secondNum.numerator;
-		resultNum.denominator = firstNum.denominator;
-		resultNum = this.optimizeFraction(resultNum);
-		return resultNum;
+		return this.optimizeFraction({
+			numerator: firstNum.numerator + secondNum.numerator,
+			denominator: firstNum.denominator
+		});
 	};
 }

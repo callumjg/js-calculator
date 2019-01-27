@@ -5,12 +5,12 @@ class DisplayArea extends React.Component {
 	checkFontSize = () => {
 		const { displayString } = this.props;
 
-		let newFontSize = 68;
+		let newFontSize = 65;
 
 		if (displayString && displayString.toString().length > 8) {
 			let numOfChar = displayString.toString().length;
 			newFontSize =
-				Math.round(490 * Math.pow(numOfChar, -0.95) * 10) / 10;
+				Math.round(485 * Math.pow(numOfChar, -0.98) * 10) / 10;
 		}
 		// console.log(`Char: ${displayString.toString().length}, fontsize: ${newFontSize}`)
 		return newFontSize;

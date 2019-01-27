@@ -21,6 +21,7 @@ class App extends React.Component {
 	}
 
 	componentDidMount() {
+		this.calc = new CalculatorOperations();
 		document.addEventListener("click", this.onInput.bind(this));
 		document.addEventListener("keydown", this.onInput.bind(this));
 		this.keyRouting = {
@@ -48,19 +49,10 @@ class App extends React.Component {
 			"%": () => this.toPercentage(),
 			p: () => this.toPercentage()
 		};
-
-		this.Calc = new CalculatorOperations();
-		// console.log(
-		// 	this.Calc.optimizeFraction({
-		// 		numerator: 8,
-		// 		denominator: 12
-		// 	})
-		// );
 	}
 
 	onInput(e) {
 		let key = "";
-
 		if (e.type === "keydown" && e.key !== "Shift") {
 			this.setState({ selectedBtn: e.key });
 			key = e.key;
@@ -75,60 +67,51 @@ class App extends React.Component {
 			if (this.keyRouting[key]) this.keyRouting[key]();
 		} catch (err) {
 			console.log(err);
-			this.setState({ msg: "Error: " + err });
+			this.setState({ msg: err.message });
 		}
-
-		// console.table(this.state);
 	}
 
 	addInputNum = key => {
-		const { displayString, isNextInputNewOperand } = this.state;
-		let tempState = { displayString: displayString };
+		let { displayString, isNextInputNewOperand } = this.state;
 
-		if (isNextInputNewOperand)
-			tempState = {
-				...tempState,
-				isNextInputNewOperand: false,
-				displayString: ""
-			};
-
-		if (tempState.displayString.length < 20) {
-			displayString[0] === "0" && displayString.length === 1
-				? (tempState = { ...tempState, displayString: key })
-				: (tempState = {
-						...tempState,
-						displayString: tempState.displayString + key
-				  });
+		displayString = displayString.toString();
+		if (isNextInputNewOperand) displayString = "";
+		if (displayString.length < 20) {
+			displayString += key;
+		}
+		if (
+			displayString.toString()[0] === "0" &&
+			displayString.indexOf(".") === -1 &&
+			displayString.length > 1
+		) {
+			displayString = displayString.slice(1, displayString.length);
 		}
 
-		tempState = {
-			...tempState,
-			displayNumObj: this.Calc.toNumObj(tempState.displayString)
-		};
-
-		this.setState(tempState);
+		this.setState({
+			isNextInputNewOperand: false,
+			displayNumObj: this.calc.toNumObj(displayString),
+			displayString: displayString
+		});
 	};
 
 	backspace = () => {
-		let { displayString, isNextInputNewOperand } = this.state;
-		let tempState = {};
+		let { displayString, isNextInputNewOperand } = this.state,
+			newDisplayString;
+
 		if (!isNextInputNewOperand) {
 			if (displayString.toString().length > 1) {
-				tempState = {
-					...tempState,
-					displayString: displayString.toString().slice(0, -1)
-				};
+				newDisplayString = displayString.toString().slice(0, -1);
+				this.setState({
+					displayNumObj: this.calc.toNumObj(newDisplayString),
+					displayString: newDisplayString
+				});
 			} else {
-				tempState = { ...tempState, displayString: "0" };
+				this.setState({
+					displayNumObj: this.calc.toNumObj(0),
+					displayString: "0"
+				});
 			}
 		}
-
-		tempState = {
-			...tempState,
-			displayNumObj: this.Calc.toNumObj(tempState.displayString)
-		};
-
-		this.setState(tempState);
 	};
 
 	addDecimal = () => {
@@ -137,7 +120,7 @@ class App extends React.Component {
 			displayString += ".";
 			this.setState({
 				displayString,
-				displayNumObj: this.Calc.toNumObj(displayString)
+				displayNumObj: this.calc.toNumObj(displayString)
 			});
 		}
 	};
@@ -163,17 +146,16 @@ class App extends React.Component {
 
 	calculate = () => {
 		let {
-			operator,
-			displayNumObj,
-			runningTotal,
-			operand,
-			isNextInputNewOperand
-		} = this.state;
-
-		let tempState = {};
-		let result = null;
-		let firstNum = runningTotal;
-		let secondNum = null;
+				operator,
+				displayNumObj,
+				runningTotal,
+				operand,
+				isNextInputNewOperand
+			} = this.state,
+			tempState = {},
+			result = null,
+			firstNum = runningTotal,
+			secondNum = null;
 
 		if (isNextInputNewOperand && operator) {
 			secondNum = operand;
@@ -186,27 +168,26 @@ class App extends React.Component {
 			switch (operator) {
 				case "/":
 					try {
-						if (this.Calc.toFloat(secondNum) === 0)
+						if (this.calc.toFloat(secondNum) === 0) {
 							throw new Error("Cannot divide by 0");
-						result = this.Calc.divide(firstNum, secondNum);
+						}
+						result = this.calc.divide(firstNum, secondNum);
 					} catch (err) {
+						result = { numerator: 0, denominator: 1 };
 						tempState = {
 							...tempState,
-							msg: err.message,
-							isNextInputNewOperand: true,
-							runningTotal: null,
-							operand: null
+							msg: err.message
 						};
 					}
 					break;
 				case "x":
-					result = this.Calc.multiply(firstNum, secondNum);
+					result = this.calc.multiply(firstNum, secondNum);
 					break;
 				case "-":
-					result = this.Calc.subtract(firstNum, secondNum);
+					result = this.calc.subtract(firstNum, secondNum);
 					break;
 				case "+":
-					result = this.Calc.add(firstNum, secondNum);
+					result = this.calc.add(firstNum, secondNum);
 					break;
 				default:
 					//no default
@@ -216,18 +197,19 @@ class App extends React.Component {
 				...tempState,
 				runningTotal: result,
 				displayNumObj: result,
-				displayString: this.Calc.toFloat(result).toString(),
+				displayString: this.calc.toFloat(result).toString(),
 				isNextInputNewOperand: true
 			};
 		}
-
 		this.setState(tempState);
 	};
 
 	clear = () => {
 		this.setState({
 			displayString: "0",
-			displayNumObj: {},
+			displayNumObj: { numerator: 0, denominator: 1 },
+			operand: { numerator: 0, denominator: 1 },
+			runningTotal: { numerator: 0, denominator: 1 },
 			operator: "",
 			msg: "",
 			isNextInputNewOperand: false
@@ -235,56 +217,21 @@ class App extends React.Component {
 	};
 
 	togglePosNeg = () => {
-		let { displayNumObj } = this.state;
-		let result = this.Calc.multiply(displayNumObj, this.Calc.toNumObj(-1));
+		let { displayNumObj } = this.state,
+			result = this.calc.multiply(displayNumObj, this.calc.toNumObj(-1));
 		this.setState({
-			displayString: this.Calc.toFloat(result),
+			displayString: this.calc.toFloat(result),
 			displayNumObj: result
 		});
 	};
+
 	toPercentage = () => {
-		let { displayNumObj } = this.state;
-		let result = this.Calc.divide(displayNumObj, this.Calc.toNumObj(100));
+		let { displayNumObj } = this.state,
+			result = this.calc.divide(displayNumObj, this.calc.toNumObj(100));
 		this.setState({
-			displayString: this.Calc.toFloat(result),
+			displayString: this.calc.toFloat(result),
 			displayNumObj: result
 		});
-	};
-
-	getPrecision = num => {
-		if (!isFinite(num) || num === "") return 0;
-		var e = 1,
-			precision = 0;
-		while (Math.round(num * e) / e !== num) {
-			e *= 10;
-			precision++;
-		}
-		return precision;
-	};
-
-	// returns factor of 10 required to convert to an integer
-	// the number in an array with the most precision
-	getFactorOfTen = arr => {
-		if (arr.constructor !== Array) {
-			arr = [arr];
-		}
-
-		let highestPrecision = null;
-
-		try {
-			let numArray = arr.map(num => parseFloat(num));
-			numArray.forEach(num => {
-				if (!isFinite(num) || typeof num != "number")
-					throw new Error("Invalid Number");
-				let thisPrecision = this.getPrecision(num);
-				if (thisPrecision > highestPrecision)
-					highestPrecision = thisPrecision;
-			});
-			return Math.pow(10, highestPrecision);
-		} catch (err) {
-			console.log(err);
-			this.setState({ msg: err.message });
-		}
 	};
 
 	render() {
@@ -339,7 +286,7 @@ class App extends React.Component {
 						selectedBtn={this.state.selectedBtn}
 					/>
 					<CalcButton
-						btnValue="*"
+						btnValue="x"
 						btnType="operator"
 						onInput={this.onInput}
 						selectedBtn={this.state.selectedBtn}

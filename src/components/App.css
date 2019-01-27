@@ -1,13 +1,21 @@
+body {
+	font-family: "Roboto", sans-serif;
+}
+
 .movable-container {
 	display: flex;
-	background: #211963;
+	/*background: #211963;*/
+	background: #06314c;
+	margin: auto;
 	align-items: center;
 	justify-content: center;
 	position: relative;
-	/*background: black;*/
 	border-radius: 50px;
 	height: 600px;
 	width: 320px;
+
+	/*for iphone:*/
+	/*background: black;*/
 }
 
 .calc-container {
