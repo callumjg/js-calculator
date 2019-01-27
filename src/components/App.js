@@ -12,10 +12,10 @@ class App extends React.Component {
 		this.state = {
 			selectedBtn: "",
 			displayString: "0",
-			displayNumObj: {},
+			displayNumObj: { numerator: 0, denominator: 1 },
 			isNextInputNewOperand: true,
-			runningTotal: {},
-			operand: {},
+			runningTotal: { numerator: 0, denominator: 1 },
+			operand: { numerator: 0, denominator: 1 },
 			operator: ""
 		};
 	}
@@ -52,11 +52,10 @@ class App extends React.Component {
 		this.Calc = new CalculatorOperations();
 		// console.log(
 		// 	this.Calc.optimizeFraction({
-		// 		numerator: 7404566174000593,
-		// 		denominator: 9107616394020732
+		// 		numerator: 8,
+		// 		denominator: 12
 		// 	})
 		// );
-		this.resultArr = [];
 	}
 
 	onInput(e) {
@@ -75,6 +74,7 @@ class App extends React.Component {
 		try {
 			if (this.keyRouting[key]) this.keyRouting[key]();
 		} catch (err) {
+			console.log(err);
 			this.setState({ msg: "Error: " + err });
 		}
 
@@ -162,7 +162,6 @@ class App extends React.Component {
 	};
 
 	calculate = () => {
-		console.log("calc called");
 		let {
 			operator,
 			displayNumObj,
@@ -180,56 +179,49 @@ class App extends React.Component {
 			secondNum = operand;
 		} else {
 			secondNum = displayNumObj;
-			tempState = { ...tempState, operand: secondNum };
+			tempState = { ...tempState, operand: displayNumObj };
 		}
 
-		console.log("set first and second num");
-
-		switch (operator) {
-			case "/":
-				try {
-					if (this.Calc.toFloat(secondNum) === 0)
-						throw new Error("Cannot divide by 0");
-					console.log("calling divide method...");
-					console.table(this.state);
-					result = this.Calc.divide(firstNum, secondNum);
-				} catch (err) {
-					tempState = {
-						...tempState,
-						msg: err.message,
-						isNextInputNewOperand: true,
-						runningTotal: null,
-						operand: null
-					};
-				}
-				break;
-			case "x":
-				result = this.Calc.multiply(firstNum, secondNum);
-				break;
-			case "-":
-				result = this.Calc.subtract(firstNum, secondNum);
-				break;
-			case "+":
-				result = this.Calc.add(firstNum, secondNum);
-				break;
-			default:
-				//no default
-				break;
+		if (operator) {
+			switch (operator) {
+				case "/":
+					try {
+						if (this.Calc.toFloat(secondNum) === 0)
+							throw new Error("Cannot divide by 0");
+						result = this.Calc.divide(firstNum, secondNum);
+					} catch (err) {
+						tempState = {
+							...tempState,
+							msg: err.message,
+							isNextInputNewOperand: true,
+							runningTotal: null,
+							operand: null
+						};
+					}
+					break;
+				case "x":
+					result = this.Calc.multiply(firstNum, secondNum);
+					break;
+				case "-":
+					result = this.Calc.subtract(firstNum, secondNum);
+					break;
+				case "+":
+					result = this.Calc.add(firstNum, secondNum);
+					break;
+				default:
+					//no default
+					break;
+			}
+			tempState = {
+				...tempState,
+				runningTotal: result,
+				displayNumObj: result,
+				displayString: this.Calc.toFloat(result).toString(),
+				isNextInputNewOperand: true
+			};
 		}
-
-		console.log("operation performed");
-
-		tempState = {
-			...tempState,
-			runningTotal: result,
-			displayNumObj: result,
-			displayString: this.Calc.toFloat(result).toString(),
-			isNextInputNewOperand: true
-		};
 
 		this.setState(tempState);
-		// this.resultArr.push([result.numerator, result.denominator]);
-		// console.table(this.resultArr);
 	};
 
 	clear = () => {

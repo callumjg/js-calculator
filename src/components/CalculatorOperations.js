@@ -99,15 +99,13 @@ export default class CalculatorOperations {
 
 	getGCD = arr => {
 		let [largerNumber, smallerNumber] = this.getLargerNumber(arr);
-		let result = null;
+		if (smallerNumber === 0 || largerNumber === 0) return 1; // Without this there will be an infinite loop
 		if (largerNumber % smallerNumber === 0) {
-			result = smallerNumber;
+			return smallerNumber;
 		} else {
 			largerNumber %= smallerNumber;
-			this.getGCD([largerNumber, smallerNumber]);
+			return this.getGCD([largerNumber, smallerNumber]);
 		}
-
-		return result;
 	};
 
 	optimizeFraction = num => {
@@ -130,10 +128,7 @@ export default class CalculatorOperations {
 
 		resultNum.numerator = firstNum.numerator * secondNum.denominator;
 		resultNum.denominator = firstNum.denominator * secondNum.numerator;
-
 		resultNum = this.optimizeFraction(resultNum);
-		console.table(resultNum);
-
 		return resultNum;
 	};
 
@@ -144,12 +139,9 @@ export default class CalculatorOperations {
 			numerator: null,
 			denominator: null
 		};
-
 		resultNum.numerator = firstNum.numerator * secondNum.numerator;
 		resultNum.denominator = firstNum.denominator * secondNum.denominator;
-
 		resultNum = this.optimizeFraction(resultNum);
-
 		return resultNum;
 	};
 
@@ -161,12 +153,9 @@ export default class CalculatorOperations {
 			denominator: null
 		};
 		[firstNum, secondNum] = this.makeSameDenominator([firstNum, secondNum]);
-
 		resultNum.numerator = firstNum.numerator - secondNum.numerator;
 		resultNum.denominator = firstNum.denominator;
-
 		resultNum = this.optimizeFraction(resultNum);
-
 		return resultNum;
 	};
 
@@ -180,9 +169,7 @@ export default class CalculatorOperations {
 		[firstNum, secondNum] = this.makeSameDenominator([firstNum, secondNum]);
 		resultNum.numerator = firstNum.numerator + secondNum.numerator;
 		resultNum.denominator = firstNum.denominator;
-
 		resultNum = this.optimizeFraction(resultNum);
-
 		return resultNum;
 	};
 }
