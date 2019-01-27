@@ -4,16 +4,18 @@ import "./CalcButton.css";
 import "./DisplayArea.css";
 import CalcButton from "./CalcButton";
 import DisplayArea from "./DisplayArea";
+import CalculatorOperations from "./CalculatorOperations";
 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			selectedBtn: "",
-			displayValue: "0",
+			displayString: "0",
+			displayNumObj: {},
 			isNextInputNewOperand: true,
-			runningTotal: null,
-			operand: null,
+			runningTotal: {},
+			operand: {},
 			operator: ""
 		};
 	}
@@ -39,12 +41,22 @@ class App extends React.Component {
 			"+": () => this.addOperator("+"),
 			"=": () => this.calculate(),
 			Enter: () => this.calculate(),
+			Backspace: () => this.backspace(),
 			c: () => this.clear(),
 			n: () => this.togglePosNeg(),
 			"+/-": () => this.togglePosNeg(),
 			"%": () => this.toPercentage(),
 			p: () => this.toPercentage()
 		};
+
+		this.Calc = new CalculatorOperations();
+		// console.log(
+		// 	this.Calc.optimizeFraction({
+		// 		numerator: 7404566174000593,
+		// 		denominator: 9107616394020732
+		// 	})
+		// );
+		this.resultArr = [];
 	}
 
 	onInput(e) {
@@ -65,40 +77,73 @@ class App extends React.Component {
 		} catch (err) {
 			this.setState({ msg: "Error: " + err });
 		}
+
+		// console.table(this.state);
 	}
 
-	addDecimal = () => {
-		let { displayValue } = this.state;
-		if (displayValue.indexOf(".") < 0) {
-			this.setState({ displayValue: (displayValue += ".") });
-		}
-	};
-
 	addInputNum = key => {
-		const { displayValue, isNextInputNewOperand } = this.state;
-		let tempState = { displayValue: displayValue };
+		const { displayString, isNextInputNewOperand } = this.state;
+		let tempState = { displayString: displayString };
 
 		if (isNextInputNewOperand)
 			tempState = {
 				...tempState,
 				isNextInputNewOperand: false,
-				displayValue: ""
+				displayString: ""
 			};
 
-		if (tempState.displayValue.length < 20) {
-			displayValue[0] === "0" && displayValue.length === 1
-				? (tempState = { ...tempState, displayValue: key })
+		if (tempState.displayString.length < 20) {
+			displayString[0] === "0" && displayString.length === 1
+				? (tempState = { ...tempState, displayString: key })
 				: (tempState = {
 						...tempState,
-						displayValue: tempState.displayValue + key
+						displayString: tempState.displayString + key
 				  });
 		}
+
+		tempState = {
+			...tempState,
+			displayNumObj: this.Calc.toNumObj(tempState.displayString)
+		};
 
 		this.setState(tempState);
 	};
 
+	backspace = () => {
+		let { displayString, isNextInputNewOperand } = this.state;
+		let tempState = {};
+		if (!isNextInputNewOperand) {
+			if (displayString.toString().length > 1) {
+				tempState = {
+					...tempState,
+					displayString: displayString.toString().slice(0, -1)
+				};
+			} else {
+				tempState = { ...tempState, displayString: "0" };
+			}
+		}
+
+		tempState = {
+			...tempState,
+			displayNumObj: this.Calc.toNumObj(tempState.displayString)
+		};
+
+		this.setState(tempState);
+	};
+
+	addDecimal = () => {
+		let { displayString } = this.state;
+		if (displayString.indexOf(".") < 0) {
+			displayString += ".";
+			this.setState({
+				displayString,
+				displayNumObj: this.Calc.toNumObj(displayString)
+			});
+		}
+	};
+
 	addOperator = newOperator => {
-		const { displayValue, operator } = this.state;
+		const { displayNumObj, operator } = this.state;
 
 		let tempState = {
 			operator: newOperator,
@@ -109,7 +154,7 @@ class App extends React.Component {
 		if (!operator) {
 			tempState = {
 				...tempState,
-				runningTotal: displayValue
+				runningTotal: displayNumObj
 			};
 		}
 
@@ -117,9 +162,10 @@ class App extends React.Component {
 	};
 
 	calculate = () => {
+		console.log("calc called");
 		let {
 			operator,
-			displayValue,
+			displayNumObj,
 			runningTotal,
 			operand,
 			isNextInputNewOperand
@@ -127,99 +173,69 @@ class App extends React.Component {
 
 		let tempState = {};
 		let result = null;
-		let firstNum = parseFloat(runningTotal);
+		let firstNum = runningTotal;
 		let secondNum = null;
 
-		if (isNextInputNewOperand) {
-			secondNum = parseFloat(operand);
+		if (isNextInputNewOperand && operator) {
+			secondNum = operand;
 		} else {
-			secondNum = parseFloat(displayValue);
-			tempState = { ...tempState, operand: parseFloat(displayValue) };
+			secondNum = displayNumObj;
+			tempState = { ...tempState, operand: secondNum };
 		}
 
-		const factorOfTen = this.getFactorOfTen([firstNum, secondNum]);
+		console.log("set first and second num");
 
 		switch (operator) {
 			case "/":
-				result = this.divide(firstNum, secondNum, factorOfTen);
+				try {
+					if (this.Calc.toFloat(secondNum) === 0)
+						throw new Error("Cannot divide by 0");
+					console.log("calling divide method...");
+					console.table(this.state);
+					result = this.Calc.divide(firstNum, secondNum);
+				} catch (err) {
+					tempState = {
+						...tempState,
+						msg: err.message,
+						isNextInputNewOperand: true,
+						runningTotal: null,
+						operand: null
+					};
+				}
 				break;
 			case "x":
-				result = this.multiply(firstNum, secondNum, factorOfTen);
+				result = this.Calc.multiply(firstNum, secondNum);
 				break;
 			case "-":
-				result = this.subtract(firstNum, secondNum, factorOfTen);
+				result = this.Calc.subtract(firstNum, secondNum);
 				break;
 			case "+":
-				result = this.add(firstNum, secondNum, factorOfTen);
+				result = this.Calc.add(firstNum, secondNum);
 				break;
 			default:
 				//no default
 				break;
 		}
 
+		console.log("operation performed");
+
 		tempState = {
 			...tempState,
 			runningTotal: result,
-			displayValue: result,
+			displayNumObj: result,
+			displayString: this.Calc.toFloat(result).toString(),
 			isNextInputNewOperand: true
 		};
 
 		this.setState(tempState);
-		console.log(`result: ${result}`);
-	};
-
-	divide = (firstNum, secondNum, factorOfTen) => {
-		try {
-			if (secondNum === 0) {
-				throw new Error("Cannot divide by 0");
-			}
-
-			let result =
-				Math.round(
-					(Math.round(firstNum * factorOfTen) /
-						Math.round(secondNum * factorOfTen)) *
-						Math.pow(10, 16)
-				) / Math.pow(10, 16);
-
-			return result;
-		} catch (err) {
-			console.log(err);
-
-			this.setState({
-				msg: err.message,
-				isNextInputNewOperand: true,
-				runningTotal: null,
-				operand: null
-			});
-
-			return 0;
-		}
-	};
-
-	multiply = (firstNum, secondNum, factorOfTen) => {
-		return (
-			Math.round(
-				Math.round(firstNum * factorOfTen) *
-					Math.round(secondNum * factorOfTen)
-			) / Math.pow(factorOfTen, 2)
-		);
-	};
-
-	subtract = (firstNum, secondNum, factorOfTen) => {
-		return (
-			(Math.round(firstNum * factorOfTen) -
-				Math.round(secondNum * factorOfTen)) /
-			factorOfTen
-		);
-	};
-
-	add = (firstNum, secondNum, factorOfTen) => {
-		return (firstNum * factorOfTen + secondNum * factorOfTen) / factorOfTen;
+		// this.resultArr.push([result.numerator, result.denominator]);
+		// console.table(this.resultArr);
 	};
 
 	clear = () => {
 		this.setState({
-			displayValue: "0",
+			displayString: "0",
+			displayNumObj: {},
 			operator: "",
 			msg: "",
 			isNextInputNewOperand: false
@@ -227,13 +243,19 @@ class App extends React.Component {
 	};
 
 	togglePosNeg = () => {
+		let { displayNumObj } = this.state;
+		let result = this.Calc.multiply(displayNumObj, this.Calc.toNumObj(-1));
 		this.setState({
-			displayValue: (this.state.displayValue * -1).toString()
+			displayString: this.Calc.toFloat(result),
+			displayNumObj: result
 		});
 	};
 	toPercentage = () => {
+		let { displayNumObj } = this.state;
+		let result = this.Calc.divide(displayNumObj, this.Calc.toNumObj(100));
 		this.setState({
-			displayValue: (this.state.displayValue / 100).toString()
+			displayString: this.Calc.toFloat(result),
+			displayNumObj: result
 		});
 	};
 
@@ -280,7 +302,7 @@ class App extends React.Component {
 					<DisplayArea
 						operator={this.state.operator}
 						msg={this.state.msg}
-						displayValue={this.state.displayValue}
+						displayString={this.state.displayString}
 					/>
 					<CalcButton
 						btnValue="c"

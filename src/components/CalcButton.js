@@ -21,7 +21,6 @@ class CalcButton extends React.Component {
 	onClick = event => {
 		const { btnValue } = this.props;
 		if (event.target.id === btnValue) {
-			// onInput(btnValue);
 			this.btnAnimate();
 		}
 	};
@@ -29,7 +28,6 @@ class CalcButton extends React.Component {
 	onKeyPress = event => {
 		const { btnValue } = this.props;
 		if (event.key === btnValue) {
-			// onInput(btnValue);
 			this.btnAnimate();
 		}
 	};
