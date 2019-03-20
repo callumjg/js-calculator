@@ -23,11 +23,13 @@ To prevent rounding inaccuracies, operands are stored in state as <b>fractions</
 
 For example `1.2` is stored behind the scenes as `12/10` and `0.123` is stored as `123/1000`.<br>
 
-When a value is displayed to the user, the decimal value is displayed<br>
+When a value is displayed to the user, the decimal value is displayed.<br>
 
 This prevents rounding inaccuracies where a number cannot accurately be expressed as a decimal value (such as 7/22 or 2/3).<br>
 
-Where the user divides 1 by 3, for example, the result is stored as a fraction of integers - i.e. `1/3` - and then displayed to the user in decimal format - `0.33333...`. In this way, any future operations calculated on the result of the initial calculation are performed on the fraction and not the rounded decimal value.
+Where the user divides 1 by 3, for example, the result is stored as a fraction of integers `i.e. 1/3` - and then displayed to the user in decimal format `i.e. 0.33333...`<br>
+
+In this way, any future operations calculated on the result of the initial calculation are performed on the fraction and not the rounded decimal value.
 
 ## Euclidean's Algorithm
 
