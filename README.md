@@ -1,68 +1,47 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# JS Calculator
 
-## Available Scripts
+A simple calculator made with React.<br>
 
-In the project directory, you can run:
+## Installation
 
-### `npm start`
+In the project directory, install the project dependencies by running:<br>
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### `npm install`
+
+Then run the application in development mode to try it in on your local machine:<br>
+
+### `npm run dev`
+
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.<br>
 
 The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+You will also see any lint errors in the console.<br>
 
-### `npm test`
+## Rounding Inaccuracies
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To prevent rounding inaccuracies, operands are stored in state as <b>fractions</b> where both the numerator and denominator are integers.<br>
 
-### `npm run build`
+For example `1.2` is stored behind the scenes as `12/10` and `0.123` is stored as `123/1000`.<br>
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+When a value is displayed to the user, the decimal value is displayed<br>
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+This prevents rounding inaccuracies where a number cannot accurately be expressed as a decimal value (such as 7/22 or 2/3).<br>
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Where the user divides 1 by 3, for example, the result is stored as a fraction of integers - i.e. `1/3` - and then displayed to the user in decimal format - `0.33333...`. In this way, any future operations calculated on the result of the initial calculation are performed on the fraction and not the rounded decimal value.
 
-### `npm run eject`
+## Euclidean's Algorithm
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+Of course, the above approach results in stored fractions quickly becoming quite large. <br>
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Euclidean's algorithm is used to reduce fractions to their smallest possible size to avoid fractions escalating in size after successive operations. <br>
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+For example, if the user enters `2.6 divided by 3.45`, this would be calculated in the following manner: <br>
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+1. The operands are stored in state as fractions of integers. The calculator then calculates `26/10 divided by 345/100`, the result being `2600/3450`.
+2. Next, the result is converted to its simplest form which is `52/69` and this is stored in state.
+3. The result is displayed to the user as a decimal value `0.7536...`.
+4. Any successive operations are then performed on the result, as stored in state, in its fractional form `52/69`.
 
-## Learn More
+## Largest safe integer
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+Nominally small inaccuracies may be introduced, however, if the numerator or denominator of a stored value exceeds the maximum safe integer available in JavaScript. If so, small inaccuracies can be expected.<br>
