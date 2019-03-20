@@ -1,5 +1,4 @@
 import React from "react";
-// import "./DisplayArea.css";
 
 class DisplayArea extends React.Component {
 	checkFontSize = () => {
@@ -12,7 +11,6 @@ class DisplayArea extends React.Component {
 			newFontSize =
 				Math.round(485 * Math.pow(numOfChar, -0.98) * 10) / 10;
 		}
-		// console.log(`Char: ${displayString.toString().length}, fontsize: ${newFontSize}`)
 		return newFontSize;
 	};
 

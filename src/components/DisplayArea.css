@@ -5,12 +5,9 @@
 	overflow: none;
 	margin: 0 0 10px 0;
 	align-items: center;
-	/*font-family: "Major Mono Display", monospace;*/
 }
 
 .calc-display-operation {
-	/*font-family: "Major Mono Display", monospace;*/
-
 	position: absolute;
 	top: -5px;
 	right: 5px;
@@ -28,6 +25,4 @@
 
 .calc-display-value p {
 	color: white;
-	/*color: black;*/
-	/*overflow: scroll;*/
 }

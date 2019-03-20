@@ -38,6 +38,7 @@ class App extends React.Component {
 			".": () => this.addDecimal(),
 			"/": () => this.addOperator("/"),
 			"*": () => this.addOperator("x"),
+			"x": () => this.addOperator("x"),
 			"-": () => this.addOperator("-"),
 			"+": () => this.addOperator("+"),
 			"=": () => this.calculate(),

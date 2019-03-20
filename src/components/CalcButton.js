@@ -35,7 +35,7 @@ class CalcButton extends React.Component {
 	btnAnimate = () => {
 		this.setState({ opacityFX: 1.0 });
 		let interval = 0.0625;
-		let time = 17;
+		let time = 18;
 		const opacityFXLoop = setInterval(() => {
 			if (this.state.opacityFX <= 0) {
 				clearInterval(opacityFXLoop);

@@ -3,19 +3,15 @@ body {
 }
 
 .movable-container {
+	position: relative;
 	display: flex;
-	/*background: #211963;*/
 	background: #06314c;
 	margin: auto;
 	align-items: center;
 	justify-content: center;
-	position: relative;
 	border-radius: 50px;
 	height: 600px;
 	width: 320px;
-
-	/*for iphone:*/
-	/*background: black;*/
 }
 
 .calc-container {
@@ -30,6 +26,5 @@ body {
 
 .calc-container p {
 	color: white;
-	/*font-weight: bold;*/
 	font-size: 20px;
 }

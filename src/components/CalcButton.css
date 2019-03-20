@@ -1,17 +1,13 @@
 .btn-calc {
-	/*font-family: "Major Mono Display", monospace;*/
-
 	min-width: 70px;
 	height: 70px;
 	border-radius: 35px;
-	/*background: white;*/
 	position: relative;
 	display: flex;
 	align-items: center;
 	text-align: center;
 	cursor: pointer;
 	z-index: 1;
-
 	-webkit-transition: background-color 100ms ease-out;
 	-ms-transition: background-color 100ms ease-out;
 	transition: background-color 100ms ease-out;
@@ -20,26 +16,14 @@
 	margin: auto;
 }
 
-.btn-calc:hover {
-	background: #ffe2bc;
-	font-weight: bold;
-}
-
 .btn-calc-control {
-	/*iphone: */
-	/*background: #b6bac1;*/
 	background: #adb2b5;
 }
 .btn-calc-operator {
-	/*iphone: */
-	/*background: #eda547;*/
 	background: #db4e0d;
 }
 
 .btn-calc-num {
-	/*iphone:*/
-	/*background: #3b3c3d;*/
-
 	background: #254b5b;
 }
 
