@@ -15,7 +15,6 @@ body {
 }
 
 .calc-container {
-	position: absolute;
 	display: inline-flex;
 	flex-wrap: wrap;
 	align-content: space-around;
