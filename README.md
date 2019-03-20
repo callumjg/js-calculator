@@ -2,6 +2,9 @@
 
 A simple calculator made with React.<br>
 
+###Try it on Heroku
+https://callumcancreate-js-calc.herokuapp.com/
+
 ## Installation
 
 In the project directory, install the project dependencies by running:<br>
