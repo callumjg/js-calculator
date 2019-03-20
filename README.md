@@ -2,7 +2,8 @@
 
 A simple calculator made with React.<br>
 
-####Try it on Heroku
+#### Try it on Heroku
+
 https://callumcancreate-js-calc.herokuapp.com/
 
 ## Installation
