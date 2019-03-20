@@ -8,7 +8,7 @@
 }
 
 .calc-display-operation {
-	height: 110px;
+	position: absolute;
 	display: flex;
 	width: 10px;
 	color: grey;

@@ -37,7 +37,10 @@ class App extends React.Component {
 			"9": () => this.addInputNum("9"),
 			".": () => this.addDecimal(),
 			"/": () => this.addOperator("/"),
-			"*": () => this.addOperator("x"),
+			"*": () => {
+				this.setState({ selectedBtn: "x" });
+				this.addOperator("x");
+			},
 			"x": () => this.addOperator("x"),
 			"-": () => this.addOperator("-"),
 			"+": () => this.addOperator("+"),
