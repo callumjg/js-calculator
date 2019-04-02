@@ -238,6 +238,42 @@ class App extends React.Component {
 		});
 	};
 
+	getButtons = ()=>{
+		const btns = [
+			{value:"c", type: "control"}, 
+			{value:"+/-", type: "control"}, 
+			{value:"%", type: "control"}, 
+			{value:"/", type: "operator"}, 
+			{value:"7", type: "num"}, 
+			{value:"8", type: "num"}, 
+			{value:"9", type: "num"}, 
+			{value:"x", type: "operator"}, 
+			{value:"4", type: "num"}, 
+			{value:"5", type: "num"}, 
+			{value:"6", type: "num"}, 
+			{value:"-", type: "operator"}, 
+			{value:"1", type: "num"}, 
+			{value:"2", type: "num"}, 
+			{value:"3", type: "num"}, 
+			{value:"+", type: "operator"}, 
+			{value:"0", type: "num btn-zero"}, 
+			{value:".", type: "num"}, 
+			{value: "=", type: "operator"}	
+			];
+
+		return btns.map((btn, index) => {
+			return (
+				<CalcButton
+					btnValue={btn.value}
+					btnType={btn.type}
+					onInput={this.onInput}
+					selectedBtn={this.state.selectedBtn}
+					key={index}
+				/>
+			);
+		});
+	};
+	
 	render() {
 		return (
 			<div className="movable-container">
@@ -247,120 +283,7 @@ class App extends React.Component {
 						msg={this.state.msg}
 						displayString={this.state.displayString}
 					/>
-					<CalcButton
-						btnValue="c"
-						btnType="control"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="+/-"
-						btnType="control"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="%"
-						btnType="control"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="/"
-						btnType="operator"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="7"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="8"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="9"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="x"
-						btnType="operator"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="4"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="5"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="6"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="-"
-						btnType="operator"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="1"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="2"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="3"
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="+"
-						btnType="operator"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="0"
-						btnType="num btn-zero"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="."
-						btnType="num"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
-					<CalcButton
-						btnValue="="
-						btnType="operator"
-						onInput={this.onInput}
-						selectedBtn={this.state.selectedBtn}
-					/>
+					{this.getButtons()}
 				</div>
 			</div>
 		);
