@@ -1,29 +1,36 @@
+html,
 body {
-	font-family: "Roboto", sans-serif;
+  font-family: "Roboto", sans-serif;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .movable-container {
-	position: relative;
-	display: flex;
-	background: #06314c;
-	margin: auto;
-	align-items: center;
-	justify-content: center;
-	border-radius: 50px;
-	height: 600px;
-	width: 320px;
+  position: relative;
+  display: flex;
+  background: #06314c;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  height: 600px;
+  width: 320px;
 }
 
 .calc-container {
-	display: inline-flex;
-	flex-wrap: wrap;
-	align-content: space-around;
-	justify-content: space-around;
-	width: 300px;
-	height: 500px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  width: 300px;
+  height: 500px;
 }
 
 .calc-container p {
-	color: white;
-	font-size: 20px;
+  color: white;
+  font-size: 20px;
 }
