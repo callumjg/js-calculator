@@ -1,15 +1,18 @@
 html,
-body {
+body, 
+#root {
   font-family: "Roboto", sans-serif;
   height: 100%;
   padding: 0;
   margin: 0;
   display: flex;
+  box-sizing: border-box;
   justify-content: center;
   align-items: center;
 }
 
 .movable-container {
+  margin: 1rem;
   position: relative;
   display: flex;
   background: #06314c;
